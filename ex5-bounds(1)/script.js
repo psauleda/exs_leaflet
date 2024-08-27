@@ -1,14 +1,24 @@
 'use strict';
 
-// Creem mapa
-const map = L.map('map', {
+// Opcions del mapa
+const mapOptions = {
+  minZoom: 2,
+  maxZoom: 18,
   zoomControl: false,
-}).setView([41.60281747649918, 2.6245074122928997], 11);
+};
+
+// Coordenades inicials
+const initCoords = [41.60281747649918, 2.6245074122928997];
+// Zoom inicial
+const initZoom = 10;
+
+// Creem mapa
+const map = L.map('map', mapOptions).setView(initCoords, initZoom);
 
 const tiles = L.tileLayer(
   'https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg',
   {
-    maxZoom: 19,
+    maxZoom: 18,
     attribution:
       '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://www.stamen.com/" target="_blank">Stamen Design</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   }
@@ -90,7 +100,7 @@ const addedGeoJson = L.geoJSON(geojson, {
   style: function (feature) {
     return {
       color: 'black',
-      weight: 0.5,
+      weight: 2,
     };
   },
   // Funció on els punts generen capes
@@ -103,11 +113,13 @@ const addedGeoJson = L.geoJSON(geojson, {
   onEachFeature: function (feature, layer) {
     if (feature.geometry.type === 'Point') {
       layer.bindPopup(
-        `Hello from lat: ${feature.geometry.coordinates[1].toFixed(
+        `Hello from<br>lat: ${feature.geometry.coordinates[1].toFixed(
           3
         )}, lon: ${feature.geometry.coordinates[0].toFixed(3)}`
       );
       // console.log(feature.geometry.coordinates);
+    } else {
+      layer.bindPopup(`I'm a ${feature.geometry.type}`);
     }
   },
 }).addTo(map);
@@ -116,4 +128,11 @@ const addedGeoJson = L.geoJSON(geojson, {
 // un padding a les obcions
 map.fitBounds(addedGeoJson.getBounds(), {
   padding: [20, 20],
+});
+
+// event sobre el mapa, restaurem posició al clicar
+map.on('click', function () {
+  map.fitBounds(addedGeoJson.getBounds(), {
+    padding: [20, 20],
+  });
 });

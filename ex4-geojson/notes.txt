@@ -2,7 +2,7 @@
 
 https://geojson.io/
 
-2- Partim de l'exercici anterior i hi afegim el geoJson creat.
+2- Partim de l'exercici anterior (ex 3) i hi afegim el geoJson creat.
 (Podem treure els salts de línia per tal que no ocupi tant d'espai,
 https://removelinebreaks.net/)
 

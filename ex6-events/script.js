@@ -1,9 +1,19 @@
 'use strict';
 
-// Creem mapa
-const map = L.map('map', {
+// Opcions del mapa
+const mapOptions = {
+  minZoom: 2,
+  maxZoom: 18,
   zoomControl: false,
-}).setView([41.60281747649918, 2.6245074122928997], 11);
+};
+
+// Coordenades inicials
+const initCoords = [41.60281747649918, 2.6245074122928997];
+// Zoom inicial
+const initZoom = 11;
+
+// Creem mapa
+const map = L.map('map', mapOptions).setView(initCoords, initZoom);
 
 const tiles = L.tileLayer(
   'https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg',
@@ -62,10 +72,17 @@ coordinates.forEach(function (coords) {
   markers.push(marker);
 });
 
-// Creem un featureGrup i afegim els markers al mapa
+// Creem un featureGrup i afegim els markers al mapa (layer)
 const featureGroup = L.featureGroup(markers).addTo(map);
 
 // Centrem el grup de punts al mapa
 map.fitBounds(featureGroup.getBounds(), {
   padding: [20, 20],
+});
+
+// event sobre el mapa, restaurem posició al clicar
+map.on('click', function () {
+  map.fitBounds(featureGroup.getBounds(), {
+    padding: [20, 20],
+  });
 });

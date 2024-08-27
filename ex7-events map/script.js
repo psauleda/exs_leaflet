@@ -1,9 +1,19 @@
 'use strict';
 
-// Creem mapa
-const map = L.map('map', {
+// Opcions del mapa
+const mapOptions = {
+  minZoom: 2,
+  maxZoom: 18,
   zoomControl: false,
-}).setView([41.60281747649918, 2.6245074122928997], 11);
+};
+
+// Coordenades inicials
+const initCoords = [41.60281747649918, 2.6245074122928997];
+// Zoom inicial
+const initZoom = 11;
+
+// Creem mapa
+const map = L.map('map', mapOptions).setView(initCoords, initZoom);
 
 const tiles = L.tileLayer(
   'https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg',
@@ -101,7 +111,7 @@ const inputCenter = document.querySelector('#current-center');
 map.on('moveend', function (e) {
   //console.log(map.getCenter());
   // Actualitzem les coordenades en el <input> (retallem decimals)
-  inputCenter.value = `Lat: ${map.getCenter().lat.toFixed(4)}, 
+  inputCenter.textContent = `Lat: ${map.getCenter().lat.toFixed(4)}, 
   Lon: ${map.getCenter().lng.toFixed(4)}`;
 });
 
@@ -109,11 +119,18 @@ map.on('moveend', function (e) {
 // Event MOSTRAR/AMAGAR markers
 // button DOM element
 const buttonToggle = document.querySelector('#toggleLayer');
-
 // Event sobre el button
 buttonToggle.addEventListener('click', function () {
   // comprovem si existeix la capa 'featureGroup' i l'eliminem o afegim
+  console.log(featureGroup);
   map.hasLayer(featureGroup)
     ? map.removeLayer(featureGroup)
     : featureGroup.addTo(map);
+});
+
+// event sobre el mapa, restaurem posició al clicar
+map.on('click', function () {
+  map.fitBounds(featureGroup.getBounds(), {
+    padding: [20, 20],
+  });
 });
